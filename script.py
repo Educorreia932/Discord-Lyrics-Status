@@ -11,11 +11,10 @@ from spotipy.oauth2 import SpotifyOAuth
 
 def get_tracks():
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-        client_id=getenv("SPOTIFY_CLIENT_ID"),
-        client_secret=getenv("SPOTIFY_CLIENT_SECRET"),
-        redirect_uri="http://127.0.0.1:8000/spotify/redirect",
-        scope="user-library-read")
-    )
+        redirect_uri="http://127.0.0.1:8000/spotify_statistics/redirect",
+        scope="user-library-read",
+        open_browser=False,
+    ))
 
     albums = sp.current_user_saved_albums()["items"]
     tracks = []
@@ -82,7 +81,7 @@ lyrics = None
 while lyrics is None:
     lyrics = get_lyrics(track)
 
-lyrics = [x for x in lyrics.split("\n") if x != "" and x[0] != "["]
+lyrics = tuple(set(x for x in lyrics.split("\n") if x != "" and x[0] != "["))
 
 status_text = choice(lyrics)
 status_emoji = random_emoji()
